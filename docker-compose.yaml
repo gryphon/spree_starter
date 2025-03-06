@@ -9,5 +9,14 @@ services:
     ports:
       - "5432:5432"
 
+  app:
+    build: .
+    environment:
+      DB_HOST: postgres
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/rails
+
 volumes:
   postgres:

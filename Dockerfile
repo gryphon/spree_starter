@@ -5,8 +5,9 @@
 # docker run -d -p 80:80 -p 443:443 --name my-app -e RAILS_MASTER_KEY=<value from config/master.key> my-app
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
-ARG RUBY_VERSION=3.3.0
-FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
+ARG RUBY_VERSION=3.3.7
+# FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
+FROM timbru31/ruby-node:3.3-22 AS base
 
 # Rails app lives here
 WORKDIR /rails
@@ -48,10 +49,11 @@ COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --from=build /rails /rails
 
 # Run and own only the runtime files as a non-root user for security
-RUN groupadd --system --gid 1000 rails && \
-    useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
-    chown -R rails:rails db log storage tmp
-USER 1000:1000
+# DISABLED FOR DEV
+# RUN groupadd --system --gid 1000 rails && \
+#     useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
+#     chown -R rails:rails db log storage tmp
+# USER 1000:1000
 
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
